@@ -20,21 +20,13 @@ namespace EnumHasFlagMethodBenchmarking
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            var summary = BenchmarkRunner.Run<EnumsBenchmark>(
-                //DefaultConfig.Instance
-                ////.AddJob(Job.Default.WithRuntime(ClrRuntime.Net462))
-                ////.AddJob(Job.Default.WithRuntime(ClrRuntime.Net472))
-                //.AddJob(Job.Default.WithRuntime(CoreRuntime.Core20))
-                //.AddJob(Job.Default.WithRuntime(CoreRuntime.Core31))
-                ////.AddJob(Job.Default.WithRuntime(CoreRuntime.Core50))
-                );
+            var summary = BenchmarkRunner.Run<EnumsBenchmark>();
 
         }
     }
 
-    [SimpleJob(RuntimeMoniker.Net472)]
-    [SimpleJob(RuntimeMoniker.CoreRt20)]
-    [SimpleJob(RuntimeMoniker.CoreRt31)]
+    [SimpleJob(RuntimeMoniker.Net461)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     public class EnumsBenchmark
     {
 
@@ -49,7 +41,7 @@ namespace EnumHasFlagMethodBenchmarking
 
         List<Beverage> tests;
 
-        [Params(50)]
+        [Params(50, 100, 200)]
         public int Size { get; set; }
 
 
@@ -72,14 +64,14 @@ namespace EnumHasFlagMethodBenchmarking
         [Benchmark]
         public void RunWithHasFlag()
         {
-            tests.Select(x => x.HasFlag(Beverage.Tea));
+            tests.Select(x => x.HasFlag(Beverage.Tea)).ToList();
         }
 
 
         [Benchmark]
         public void RunWithBitOperator()
         {
-            tests.Select(x => (x & Beverage.Tea) == Beverage.Tea);
+            tests.Select(x => (x & Beverage.Tea) == Beverage.Tea).ToList();
         }
 
     }
