@@ -1,6 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using System;
@@ -8,42 +6,34 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-/*
- Modifica csproj per includere target (.net framework 4.7.1, dotnetcore2... )
-     
-     */
-
 namespace EnumHasFlagMethodBenchmarking
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             var summary = BenchmarkRunner.Run<EnumsBenchmark>();
 
         }
+    }
+
+    [Flags]
+    public enum Beverage
+    {
+        Water = 1,
+        Beer = 2,
+        Tea = 4,
+        Wine = 8
     }
 
     [SimpleJob(RuntimeMoniker.Net461)]
     [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     public class EnumsBenchmark
     {
-
-        [Flags]
-        public enum Beverage
-        {
-            Water = 1,
-            Beer = 2,
-            Tea = 4,
-            Wine = 8
-        }
-
-        List<Beverage> tests;
+        private List<Beverage> tests;
 
         [Params(50, 100, 200)]
         public int Size { get; set; }
-
 
         [GlobalSetup]
         public void Setup()
